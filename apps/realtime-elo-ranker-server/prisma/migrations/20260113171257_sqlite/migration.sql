@@ -1,0 +1,5 @@
+-- CreateTable
+CREATE TABLE "Player" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "elo" INTEGER NOT NULL DEFAULT 1000
+);
