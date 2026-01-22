@@ -11,6 +11,8 @@ export class RankingsService {
   // QuoiCouCache
   private rankingCache: Map<string, number> = new Map();
 
+  health() {return "not database"}
+
   // Get le classement mon reuf
   getAll(): PlayerRanking[] {
     return Array.from(this.rankingCache.entries()).map(([id, rank]) => ({
@@ -19,21 +21,23 @@ export class RankingsService {
     }));
   }
 
-  // Update ou Add un player
-  update(id: string, rank: number) {
-    this.rankingCache.set(id, rank);
-  }
-
   // Get le rank d'un player ma gueule
   get(id: string): number | undefined {
     return this.rankingCache.get(id);
   }
+
+  // Update ou Add un player
+  update(id: string, rank: number) {
+    this.rankingCache.set(id, rank);
+  }
 }
 
-
+@Injectable()
 export class RankingsServiceDatabase {
 
     constructor(private playersService: PlayersService) {}
+
+    health() {this.playersService.health()}
 
     getAll() { this.playersService.findAll() }
 

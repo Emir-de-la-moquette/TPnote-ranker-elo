@@ -1,17 +1,23 @@
 import { Controller, Get, Param, Post, Body } from '@nestjs/common';
-import { RankingsService } from './rankings.service';
+import { RankingsService, RankingsServiceDatabase } from './rankings.service';
 
-@Controller('rankings')
+@Controller('api/ranking')
 export class RankingsController {
-  constructor(private readonly rankingsService: RankingsService) {}
+  constructor(private readonly rankingsService: RankingsServiceDatabase) {}
 
-  // GET /rankings
+  // GET /ranking
+  @Get('health')
+  health() {
+    return this.rankingsService.health();
+  }
+
+  // GET /ranking
   @Get()
   getAll() {
     return this.rankingsService.getAll();
   }
 
-  // GET /rankings/:playerId
+  // GET /ranking/:playerId
   @Get(':playerId')
   getElo(@Param('playerId') playerId: string) {
     return {
@@ -20,7 +26,7 @@ export class RankingsController {
     };
   }
 
-  // POST /rankings
+  // POST /ranking
   @Post()
   setElo(
             @Body() body: { playerId: string, elo: number },
