@@ -46,17 +46,16 @@ const config: runtime.GetPrismaClientConfig = {
     "db"
   ],
   "activeProvider": "sqlite",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
-        "fromEnvVar": "DATABASE_URL",
-        "value": null
+        "fromEnvVar": null,
+        "value": "file:./prisma/eloRanker.db"
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"./generated/prisma\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Player {\n  id  String @id @default(uuid())\n  elo Int    @default(1000)\n}\n",
-  "inlineSchemaHash": "268c5cf879d25f75d9a2cee08fa25b3b747626e9d630d81c26473781cdfb7290",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"./generated/prisma\"\n}\n\n// datasource db {\n//   provider = \"sqlite\"\n//   url = env(\"DATABASE_URL\")\n//   // url = \"file:./eloRanker.db\"\n// }\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = \"file:./prisma/eloRanker.db\"\n}\n\nmodel Player {\n  id  String @id @default(uuid())\n  elo Int    @default(1000)\n}\n",
+  "inlineSchemaHash": "15b24e78705f7495029687bf88c3a362770703e94c28d52cd0d23ba69d10df7d",
   "copyEngine": true,
   "runtimeDataModel": {
     "models": {},
