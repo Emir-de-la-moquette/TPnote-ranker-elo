@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PlayersService } from '../players/players.service'
+import { map, Observable, Subject } from 'rxjs';
 
 export interface PlayerRanking {
   id: string;
@@ -35,16 +36,41 @@ export class RankingsService {
 @Injectable()
 export class RankingsServiceDatabase {
 
-    constructor(private playersService: PlayersService) {}
+	private rankingCache: Map<string, number> = new Map();
+	private rankingUpdates = new Subject<PlayerRanking>()
+
+    constructor(
+		private playersService: PlayersService,
+    ) {}
+    
 
     health() {this.playersService.health()}
 
-    getAll() { this.playersService.findAll() }
+    async getAll() { 
+		const players = await this.playersService.findAll() 
 
-    get(id: string) { this.playersService.findById(id) }
+		players.forEach(p => {
+			this.rankingCache.set(p.id, p.elo);
+		});
+		return players;
+	}
+
+    async get(id: string): Promise<{ id: string; elo: number } | null> {
+		const player = await this.playersService.findById(id);
+		if (!player) return null;
+		return player;
+    }
 
     async update(id: string, rank: number) {
         await this.playersService.updateOrCreate(id, rank);
+		this.rankingCache.set(id, rank);
+		this.rankingUpdates.next({ id, rank });
+    }
+
+    getUpdates(): Observable<any> {
+      return this.rankingUpdates.asObservable().pipe(
+        map(player => ({ data: { type: 'RankingUpdate', player } }))
+      );
     }
     
 }

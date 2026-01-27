@@ -23,7 +23,7 @@ export class PlayersService {
     return this.prisma.player.findMany();
   }
 
-  findById(id: string) {
+  findById(id: string): Promise<{ id: string; elo: number } | null> {
     return this.prisma.player.findUnique({
       where: { id },
     });
@@ -34,6 +34,17 @@ export class PlayersService {
 //       data: { id, elo },
 //     });
 //   }
+
+  async moyenneElo(): Promise<number> {
+    const result = await this.prisma.player.aggregate({
+      _avg: {
+        elo: true,
+      },
+    });
+    const avg = result._avg.elo ?? 800; // j'ai mis 800 car je crois c'est l'elo de base aux echecs
+    return Math.round(avg);
+  }
+
 
   updateOrCreate(id: string, elo: number) {
     return this.prisma.player.upsert({
