@@ -1,21 +1,36 @@
-import { Controller, Get, Param, Post, Body, Sse } from '@nestjs/common';
-import { RankingsService, RankingsServiceDatabase } from './rankings.service';
+import { Controller, Get, Param, Post, Body, Sse, HttpException } from '@nestjs/common';
+import { /*RankingsService, */RankingsServiceDatabase } from './rankings.service';
 import { Observable } from 'rxjs';
 
 @Controller('api/ranking')
 export class RankingsController {
   constructor(private readonly rankingsService: RankingsServiceDatabase) {}
 
-  // GET /ranking
+  // GET /ranking/health
   @Get('health')
   health() {
-    return this.rankingsService.health();
+    return {
+      Body : this.rankingsService.health()
+    };
   }
 
   // GET /ranking
   @Get()
-  getAll() {
-    return this.rankingsService.getAll();
+  async getAll() {
+    const players = await this.rankingsService.getAll();
+
+    if (!players || players.length==0){
+      throw new HttpException(
+          { success: false, message: "Le classement n'est pas disponible car aucun joueur n'existe" },
+          404,
+      );
+    }
+    else {
+      return {
+        success: true,
+        Body : players
+      };
+    }
   }
 
   // GET /ranking/player?:playerId

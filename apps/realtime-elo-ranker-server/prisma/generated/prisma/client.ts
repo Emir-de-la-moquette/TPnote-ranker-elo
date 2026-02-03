@@ -37,12 +37,17 @@ export { Prisma }
 
 // file annotations for bundling tools to include these files
 path.join(__dirname, "query_engine-windows.dll.node")
-path.join(process.cwd(), "prisma/generated/prisma/query_engine-windows.dll.node")
+path.join(process.cwd(), "generated/prisma/query_engine-windows.dll.node")
 
 /**
  * Model Player
  * 
  */
 export type Player = Prisma.PlayerModel
+/**
+ * Model Match
+ * 
+ */
+export type Match = Prisma.MatchModel
 
 

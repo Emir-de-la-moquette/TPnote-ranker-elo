@@ -50,12 +50,12 @@ const config: runtime.GetPrismaClientConfig = {
     "db": {
       "url": {
         "fromEnvVar": null,
-        "value": "file:./prisma/eloRanker.db"
+        "value": "file:./eloRanker.db"
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"./generated/prisma\"\n}\n\n// datasource db {\n//   provider = \"sqlite\"\n//   url = env(\"DATABASE_URL\")\n//   // url = \"file:./eloRanker.db\"\n// }\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = \"file:./prisma/eloRanker.db\"\n}\n\nmodel Player {\n  id  String @id @default(uuid())\n  elo Int    @default(1000)\n}\n",
-  "inlineSchemaHash": "15b24e78705f7495029687bf88c3a362770703e94c28d52cd0d23ba69d10df7d",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"./generated/prisma\"\n}\n\n// datasource db {\n//   provider = \"sqlite\"\n//   url = env(\"DATABASE_URL\")\n//   // url = \"file:./eloRanker.db\"\n// }\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = \"file:./eloRanker.db\"\n}\n\nmodel Player {\n  id  String @id @default(uuid())\n  elo Int    @default(1000)\n}\n\nmodel Match {\n  id     String @id @default(uuid())\n  winner String\n  loser  String\n}\n",
+  "inlineSchemaHash": "fb06b9f5bac919abb90ab5aea492052dfe8efd8a5d8b44d27422abf4c4e12719",
   "copyEngine": true,
   "runtimeDataModel": {
     "models": {},
@@ -65,7 +65,7 @@ const config: runtime.GetPrismaClientConfig = {
   "dirname": ""
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Player\":{\"dbName\":null,\"schema\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"uuid\",\"args\":[4]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"elo\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Int\",\"nativeType\":null,\"default\":1000,\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Player\":{\"dbName\":null,\"schema\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"uuid\",\"args\":[4]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"elo\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Int\",\"nativeType\":null,\"default\":1000,\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"Match\":{\"dbName\":null,\"schema\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"uuid\",\"args\":[4]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"winner\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"loser\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false}},\"enums\":{},\"types\":{}}")
 config.engineWasm = undefined
 config.compilerWasm = undefined
 
@@ -215,6 +215,16 @@ export interface PrismaClient<
     * ```
     */
   get player(): Prisma.PlayerDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.match`: Exposes CRUD operations for the **Match** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Matches
+    * const matches = await prisma.match.findMany()
+    * ```
+    */
+  get match(): Prisma.MatchDelegate<ExtArgs, ClientOptions>;
 }
 
 export function getPrismaClientClass(dirname: string): PrismaClientConstructor {

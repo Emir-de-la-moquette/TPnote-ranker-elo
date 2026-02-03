@@ -22,5 +22,11 @@ datasource db {
 
 model Player {
   id        String  @id @default(uuid())
-  elo       Int     @default(1000)
+  elo       Int     @default(400)
+}
+
+model Match {
+  id        String  @id @default(uuid())
+  winner    String
+  loser     String
 }

@@ -4,6 +4,9 @@ import * as path from 'path';
 
 @Injectable()
 export class PlayersService {
+  
+	private rankingCache: Map<string, number> = new Map();
+
   constructor(private prisma: PrismaService) {}
 
   async health() {
@@ -19,14 +22,25 @@ export class PlayersService {
   }
 
 
-  findAll() {
-    return this.prisma.player.findMany();
+  async findAll() {
+
+    let feur = await this.prisma.player.findMany();
+    
+		feur.forEach(p => {
+			this.rankingCache.set(p.id, p.elo);
+		});
+
+    return feur;
   }
 
-  findById(id: string): Promise<{ id: string; elo: number } | null> {
-    return this.prisma.player.findUnique({
-      where: { id },
-    });
+  findById(id: string): { id: string; elo: number } | null {
+    // return this.prisma.player.findUnique({
+    //   where: { id },
+    // });
+    let elo = this.rankingCache.get(id);
+    if (elo)
+    return {id, elo};
+    return null;
   }
 
 //   create(id: string, elo: number) {
@@ -41,12 +55,13 @@ export class PlayersService {
         elo: true,
       },
     });
-    const avg = result._avg.elo ?? 800; // j'ai mis 800 car je crois c'est l'elo de base aux echecs
+    const avg = result._avg.elo ?? 400;
     return Math.round(avg);
   }
 
 
   updateOrCreate(id: string, elo: number) {
+		this.rankingCache.set(id, elo);
     return this.prisma.player.upsert({
         create:{id, elo},
         update:{id, elo},
